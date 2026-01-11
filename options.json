@@ -65,12 +65,6 @@
       { "id": "passata", "name": "passata + Italiaanse kruiden", "kind": "passata" },
       { "id": "taco", "name": "taco kruiden", "kind": "taco" },
       { "id": "pesto", "name": "pesto (liefst light)", "kind": "pesto" }
-    ],
-
-    "fat": [
-      { "id": "none", "name": "geen" },
-      { "id": "olive_oil", "name": "olijfolie", "kind": "oil" },
-      { "id": "coconut_oil", "name": "kokosolie", "kind": "oil" }
     ]
   }
 }
