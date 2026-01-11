@@ -1,467 +1,176 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Meal Matrix → Boodschappenlijst</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Meal Matrix</title>
+
   <style>
-    :root { color-scheme: light; }
-    body { font-family: system-ui, -apple-system, "Segoe UI", roboto, arial, sans-serif; margin: 0; background: #f6f7fb; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 20px; }
-    h1 { margin: 0 0 12px; font-size: 22px; }
-    .card { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 8px 22px rgba(0,0,0,.06); }
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
-    .col-12 { grid-column: span 12; }
-    .col-6 { grid-column: span 6; }
-    .col-4 { grid-column: span 4; }
-    .col-3 { grid-column: span 3; }
-    label { display: block; font-size: 12px; opacity: .8; margin: 0 0 6px; }
-    select, input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #d8dbe6; background: #fff; font-size: 14px; }
-    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .muted { font-size: 12px; opacity: .7; }
-    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #eef2ff; font-size: 12px; }
-    .list { margin: 0; padding-left: 18px; }
-    .list li { margin: 6px 0; }
-    .btns { display: flex; gap: 10px; flex-wrap: wrap; }
-    button { padding: 10px 12px; border-radius: 10px; border: 1px solid #d8dbe6; background: #fff; cursor: pointer; font-size: 14px; }
-    button.primary { background: #111827; color: #fff; border-color: #111827; }
-    pre { background: #0b1020; color: #e5e7eb; padding: 12px; border-radius: 12px; overflow: auto; }
-    @media (max-width: 860px) {
-      .col-6, .col-4, .col-3 { grid-column: span 12; }
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      background: #f2f2f7;
+      margin: 0;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 12px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 12px;
+      border: 1px solid #d1d1d6;
+      font-size: 16px;
+      background: #fff;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 14px;
+      border: none;
+      background: #007aff;
+      color: #fff;
+    }
+    button:active {
+      background: #005ecb;
+    }
+    .hint {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 6px;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>Meal Matrix → kies combinaties en krijg direct een boodschappenlijst</h1>
+  <h1>🍽️ Meal Matrix</h1>
 
-    <div class="card">
-      <div class="grid">
-        <div class="col-12">
-          <div class="row">
-            <span class="pill">Standaard: 2 volwassenen + 2 kids (kids eten minder) + koken voor 2 dagen</span>
-          </div>
-        </div>
+  <label>Aantal volwassenen</label>
+  <input id="adults" type="number" value="2" min="0">
 
-        <div class="col-3">
-          <label>Volwassenen</label>
-          <input id="adults" type="number" min="0" step="1" value="2" />
-        </div>
-        <div class="col-3">
-          <label>Kids</label>
-          <input id="kids" type="number" min="0" step="1" value="2" />
-        </div>
-        <div class="col-3">
-          <label>Kids-factor (0.5–0.8)</label>
-          <input id="kidFactor" type="number" min="0.5" max="0.8" step="0.05" value="0.6" />
-        </div>
-        <div class="col-3">
-          <label>Dagen koken</label>
-          <input id="days" type="number" min="1" step="1" value="2" />
-        </div>
+  <label>Aantal kids</label>
+  <input id="kids" type="number" value="2" min="0">
 
-        <div class="col-6">
-          <label>Basis</label>
-          <select id="base"></select>
-        </div>
-        <div class="col-6">
-          <label>Eiwit</label>
-          <select id="protein"></select>
-        </div>
-        <div class="col-6">
-          <label>Groente</label>
-          <select id="veg"></select>
-        </div>
-        <div class="col-6">
-          <label>Smaakmaker</label>
-          <select id="flavor"></select>
-        </div>
+  <label>Kids factor</label>
+  <input id="kid_factor" type="number" step="0.1" value="0.6" min="0.5" max="1">
 
-        <div class="col-6">
-          <label>Vet (optioneel)</label>
-          <select id="fat"></select>
-          <div class="muted" style="margin-top:6px;">Tip: als je afvalt: zet vet op “geen”.</div>
-        </div>
+  <label>Aantal dagen</label>
+  <input id="days" type="number" value="2" min="1">
 
-        <div class="col-6">
-          <label>Info</label>
-          <div class="muted" id="portionInfo"></div>
-          <div class="muted" id="macroHint" style="margin-top:8px;"></div>
-        </div>
+  <label>Basis</label>
+  <select id="base"></select>
 
-        <div class="col-12">
-          <h3 style="margin: 6px 0 8px;">Boodschappenlijst</h3>
-          <ul class="list" id="shoppingList"></ul>
-          <div class="muted" id="prepNotes" style="margin-top:10px;"></div>
-        </div>
+  <label>Eiwit</label>
+  <select id="protein"></select>
 
-        <div class="col-12">
-          <div class="btns">
-            <button class="primary" id="copyBtn">Kopieer boodschappenlijst</button>
-            <button id="copyRecipeBtn">Kopieer recept/plan</button>
-          </div>
-          <div class="muted" style="margin-top:10px;">
-            Hoeveelheden zijn “makkelijk” afgerond (rijst per 50g, vlees per 100g, groente per zak, enz.).
-          </div>
-        </div>
+  <label>Groente</label>
+  <select id="veg"></select>
 
-        <div class="col-12">
-          <details>
-            <summary>Tekst-output (handig om te delen)</summary>
-            <pre id="textOut"></pre>
-          </details>
-        </div>
-      </div>
-    </div>
-  </div>
+  <label>Smaakmaker</label>
+  <select id="flavor"></select>
+
+  <label>Vet (optioneel)</label>
+  <select id="fat"></select>
+
+  <button onclick="make_list()">🛒 Boodschappenlijst</button>
 
   <script>
-    // ==========
-    // Data
-    // ==========
+    let options, packaging, per;
 
-    // Per "volwassen-portie" (ruw, lekker praktisch):
-    // basis: 85g ongekookt (rijst/pasta/quinoa/bulgur), aardappel 250g, wraps 2 st.
-    // eiwit: 160g, groente: 250g, smaakmaker: 30g, vet: 5g
-    const perPortion = {
-      baseDryG: 85,
-      potatoG: 250,
-      wrapsCount: 2,
-      proteinG: 160,
-      vegG: 250,
-      flavorG: 30,
-      fatG: 5
-    };
-
-    // "Makkelijke" afrondingen / verpakkingen (NL supermarkt-ish)
-    const packaging = {
-      riceStepG: 50,
-      pastaStepG: 50,
-      dryOtherStepG: 50,
-      potatoStepG: 250,
-      proteinStepG: 100,
-      vegFrozenBagG: 750,     // veel diepvries roerbakmixen
-      vegFreshPackG: 400,     // typische wokgroente / broccoli roosjes etc.
-      curryPasteJarG: 200,    // potjes variëren, 150-200g; we nemen 200g als "makkelijk"
-      passataCartonG: 500,
-      tacoSeasoningSachetG: 30,
-      soyBottleMl: 150,       // klein flesje
-      pestoJarG: 190,
-      oilBottleMl: 500
-    };
-
-    const options = {
-      base: [
-        { id: "rice_white", name: "rijst (wit)", type: "dry_g", roundStep: packaging.riceStepG, shop: { item: "rijst", unit: "g" } },
-        { id: "rice_brown", name: "rijst (zilvervlies)", type: "dry_g", roundStep: packaging.riceStepG, shop: { item: "zilvervliesrijst", unit: "g" } },
-        { id: "pasta", name: "pasta", type: "dry_g", roundStep: packaging.pastaStepG, shop: { item: "pasta", unit: "g" } },
-        { id: "quinoa", name: "quinoa", type: "dry_g", roundStep: packaging.dryOtherStepG, shop: { item: "quinoa", unit: "g" } },
-        { id: "bulgur", name: "bulgur", type: "dry_g", roundStep: packaging.dryOtherStepG, shop: { item: "bulgur", unit: "g" } },
-        { id: "potatoes", name: "aardappelen/krieltjes", type: "potato_g", roundStep: packaging.potatoStepG, shop: { item: "aardappelen (of krieltjes)", unit: "g" } },
-        { id: "wraps", name: "wraps", type: "wraps_count", roundStep: 1, shop: { item: "wraps", unit: "st" } }
-      ],
-      protein: [
-        { id: "chicken", name: "kipfilet", type: "protein_g", roundStep: packaging.proteinStepG, shop: { item: "kipfilet", unit: "g" } },
-        { id: "turkey", name: "kalkoenfilet", type: "protein_g", roundStep: packaging.proteinStepG, shop: { item: "kalkoenfilet", unit: "g" } },
-        { id: "beef_mince_lean", name: "rundergehakt (mager)", type: "protein_g", roundStep: packaging.proteinStepG, shop: { item: "mager rundergehakt", unit: "g" } },
-        { id: "white_fish", name: "witvis (kabeljauw/pangasius)", type: "protein_g", roundStep: packaging.proteinStepG, shop: { item: "witvis", unit: "g" } },
-        { id: "salmon", name: "zalm", type: "protein_g", roundStep: packaging.proteinStepG, shop: { item: "zalm", unit: "g" } },
-        { id: "tofu", name: "tofu", type: "protein_g", roundStep: packaging.proteinStepG, shop: { item: "tofu", unit: "g" } },
-        { id: "eggs", name: "eieren", type: "eggs", roundStep: 1, shop: { item: "eieren", unit: "st" } }
-      ],
-      veg: [
-        { id: "stirfry_mix", name: "diepvries roerbakmix", kind: "frozen_bag", shop: { item: "diepvries roerbakmix", unit: "g" } },
-        { id: "broccoli", name: "broccoli", kind: "fresh_pack", shop: { item: "broccoli (roosjes)", unit: "g" } },
-        { id: "green_beans", name: "sperziebonen", kind: "fresh_pack", shop: { item: "sperziebonen", unit: "g" } },
-        { id: "pepper_onion", name: "paprika + ui", kind: "fresh_pack", shop: { item: "paprika + ui (mix)", unit: "g" } },
-        { id: "spinach", name: "spinazie", kind: "fresh_pack", shop: { item: "spinazie", unit: "g" } },
-        { id: "courgette", name: "courgette", kind: "fresh_pack", shop: { item: "courgette", unit: "g" } }
-      ],
-      flavor: [
-        { id: "curry_green", name: "groene curry paste", kind: "curry_paste", shop: [{ item: "groene curry paste", unit: "g" }, { item: "kokosmelk (light, optioneel)", unit: "ml", hint: "als je 'm romiger wilt" }] },
-        { id: "curry_yellow", name: "gele curry paste", kind: "curry_paste", shop: [{ item: "gele curry paste", unit: "g" }, { item: "kokosmelk (light, optioneel)", unit: "ml", hint: "als je 'm romiger wilt" }] },
-        { id: "curry_red", name: "rode curry paste", kind: "curry_paste", shop: [{ item: "rode curry paste", unit: "g" }, { item: "kokosmelk (light, optioneel)", unit: "ml", hint: "als je 'm romiger wilt" }] },
-        { id: "soy_garlic", name: "sojasaus + knoflook", kind: "soy", shop: [{ item: "sojasaus", unit: "ml" }, { item: "knoflook", unit: "teentjes" }] },
-        { id: "teriyaki_light", name: "teriyaki (light)", kind: "teriyaki", shop: [{ item: "teriyaki saus (light)", unit: "ml" }] },
-        { id: "italian_passata", name: "tomatenpassata + Italiaanse kruiden", kind: "passata", shop: [{ item: "passata", unit: "g" }, { item: "Italiaanse kruiden", unit: "tsp" }] },
-        { id: "taco", name: "taco kruiden", kind: "taco", shop: [{ item: "taco kruiden", unit: "g" }] },
-        { id: "pesto_light", name: "pesto (liefst light)", kind: "pesto", shop: [{ item: "pesto", unit: "g" }] }
-      ],
-      fat: [
-        { id: "none", name: "geen" },
-        { id: "olive_oil", name: "olijfolie (1 tl p.p.)", kind: "oil", shop: [{ item: "olijfolie", unit: "ml" }] },
-        { id: "coconut_oil", name: "kokosolie (1 tl p.p.)", kind: "oil", shop: [{ item: "kokosolie", unit: "g" }] }
-      ]
-    };
-
-    // ==========
-    // Helpers
-    // ==========
-    function roundToStep(value, step) {
-      if (!step || step <= 1) return Math.round(value);
-      return Math.round(value / step) * step;
-    }
-    function ceilToStep(value, step) {
-      if (!step || step <= 1) return Math.ceil(value);
-      return Math.ceil(value / step) * step;
-    }
-    function formatQty(qty, unit) {
-      // keep it simple
-      if (unit === "ml" || unit === "g") return `${qty} ${unit}`;
-      return `${qty} ${unit}`;
+    async function load_options() {
+      const res = await fetch("./options.json", { cache: "no-store" });
+      const data = await res.json();
+      options = data.options;
+      packaging = data.packaging;
+      per = data.per_portion;
     }
 
-    function getPortions() {
-      const adults = Math.max(0, Number(document.getElementById("adults").value || 0));
-      const kids = Math.max(0, Number(document.getElementById("kids").value || 0));
-      const kidFactor = Math.min(0.8, Math.max(0.5, Number(document.getElementById("kidFactor").value || 0.6)));
-      const days = Math.max(1, Number(document.getElementById("days").value || 2));
-
-      const dayPortions = adults * 1 + kids * kidFactor;      // volwassen-portie equivalenten per dag
-      const totalPortions = dayPortions * days;               // voor X dagen
-      return { adults, kids, kidFactor, days, dayPortions, totalPortions };
+    function fill(id, list, def) {
+      const s = document.getElementById(id);
+      s.innerHTML = "";
+      for (const o of list) {
+        const opt = document.createElement("option");
+        opt.value = o.id;
+        opt.textContent = o.name;
+        s.appendChild(opt);
+      }
+      s.value = def || list[0]?.id;
     }
 
-    function findById(list, id) { return list.find(x => x.id === id); }
-
-    // ==========
-    // Calc quantities
-    // ==========
-    function calcBaseQty(baseOpt, portions) {
-      if (baseOpt.type === "dry_g") {
-        const raw = perPortion.baseDryG * portions;
-        const rounded = ceilToStep(raw, baseOpt.roundStep);
-        return [{ item: baseOpt.shop.item, qty: rounded, unit: "g", note: "ongekookt" }];
-      }
-      if (baseOpt.type === "potato_g") {
-        const raw = perPortion.potatoG * portions;
-        const rounded = ceilToStep(raw, baseOpt.roundStep);
-        return [{ item: baseOpt.shop.item, qty: rounded, unit: "g" }];
-      }
-      if (baseOpt.type === "wraps_count") {
-        const raw = perPortion.wrapsCount * portions;
-        const rounded = ceilToStep(raw, 2); // wraps vaak per 6/8, maar we ronden per 2 af
-        return [{ item: baseOpt.shop.item, qty: rounded, unit: "st" }];
-      }
-      return [];
+    function portions() {
+      const a = +adults.value;
+      const k = +kids.value;
+      const f = +kid_factor.value;
+      const d = +days.value;
+      return (a + k * f) * d;
     }
 
-    function calcProteinQty(proteinOpt, portions) {
-      if (proteinOpt.type === "protein_g") {
-        const raw = perPortion.proteinG * portions;
-        const rounded = ceilToStep(raw, proteinOpt.roundStep);
-        return [{ item: proteinOpt.shop.item, qty: rounded, unit: "g" }];
-      }
-      if (proteinOpt.type === "eggs") {
-        // 2 eieren per volwassen-portie equivalent is best stevig
-        const raw = 2 * portions;
-        const rounded = ceilToStep(raw, 2);
-        return [{ item: "eieren", qty: rounded, unit: "st" }];
-      }
-      return [];
+    function round(v, step) {
+      return Math.ceil(v / step) * step;
     }
 
-    function calcVegQty(vegOpt, portions) {
-      const raw = perPortion.vegG * portions;
+    function make_list() {
+      const p = portions();
+      const out = [];
 
-      if (vegOpt.kind === "frozen_bag") {
-        const bags = Math.ceil(raw / packaging.vegFrozenBagG);
-        const qty = bags * packaging.vegFrozenBagG;
-        return [{
-          item: vegOpt.shop.item,
-          qty,
-          unit: "g",
-          note: `≈ ${bags} zak(ken) van ${packaging.vegFrozenBagG}g`
-        }];
+      const fat = options.fat.find(x => x.id === fat_select.value);
+      if (fat && fat.id !== "none") out.push(`☐ ${fat.name}`);
+
+      const veg = options.veg.find(x => x.id === veg_select.value);
+      const veg_g = round(per.veg_g * p, packaging.veg_fresh_pack_g);
+      out.push(`☐ ${veg.name} – ${veg_g} g`);
+
+      const prot = options.protein.find(x => x.id === protein_select.value);
+      const prot_g = round(per.protein_g * p, packaging.protein_step_g);
+      out.push(`☐ ${prot.name} – ${prot_g} g`);
+
+      const base = options.base.find(x => x.id === base_select.value);
+      if (base.type === "wraps_count") {
+        out.push(`☐ ${base.name} – ${Math.ceil(per.wraps_count * p)} st`);
+      } else if (base.type === "potato_g") {
+        out.push(`☐ ${base.name} – ${round(per.potato_g * p, packaging.potato_step_g)} g`);
+      } else {
+        out.push(`☐ ${base.name} – ${round(per.base_dry_g * p, packaging.rice_step_g)} g`);
       }
 
-      // fresh_pack default
-      const packs = Math.ceil(raw / packaging.vegFreshPackG);
-      const qty = packs * packaging.vegFreshPackG;
-      return [{
-        item: vegOpt.shop.item,
-        qty,
-        unit: "g",
-        note: `≈ ${packs} verpakking(en) van ${packaging.vegFreshPackG}g`
-      }];
+      const flav = options.flavor.find(x => x.id === flavor_select.value);
+      out.push(`☐ ${flav.name}`);
+
+      navigator.clipboard.writeText(out.join("\n"));
+      alert("Boodschappenlijst gekopieerd naar klembord");
     }
 
-    function calcFlavorQty(flavorOpt, portions) {
-      const items = [];
+    const adults = document.getElementById("adults");
+    const kids = document.getElementById("kids");
+    const kid_factor = document.getElementById("kid_factor");
+    const days = document.getElementById("days");
 
-      if (flavorOpt.kind === "curry_paste") {
-        const rawPaste = perPortion.flavorG * portions;
-        const jars = Math.ceil(rawPaste / packaging.curryPasteJarG);
-        const qtyPaste = jars * packaging.curryPasteJarG;
-        items.push({
-          item: flavorOpt.shop[0].item,
-          qty: qtyPaste,
-          unit: "g",
-          note: `≈ ${jars} pot(ten) van ${packaging.curryPasteJarG}g`
-        });
-        // kokosmelk optioneel: 200ml per dag is vaak genoeg
-        const { days } = getPortions();
-        const coconutMl = ceilToStep(200 * days, 200);
-        items.push({ item: "kokosmelk (light, optioneel)", qty: coconutMl, unit: "ml", note: "voor extra romig" });
-      }
-      else if (flavorOpt.kind === "passata") {
-        const raw = perPortion.flavorG * portions; // sauce grams
-        const cartons = Math.ceil(raw / packaging.passataCartonG);
-        const qty = cartons * packaging.passataCartonG;
-        items.push({ item: "passata", qty, unit: "g", note: `≈ ${cartons} pak(ken) van ${packaging.passataCartonG}g` });
-        items.push({ item: "Italiaanse kruiden", qty: 2, unit: "tsp", note: "minimaal; naar smaak" });
-      }
-      else if (flavorOpt.kind === "taco") {
-        // 1 zakje per dag is vaak perfect
-        const { days } = getPortions();
-        const sachets = days;
-        items.push({ item: "taco kruiden", qty: sachets * packaging.tacoSeasoningSachetG, unit: "g", note: `≈ ${sachets} zakje(s)` });
-      }
-      else if (flavorOpt.kind === "soy") {
-        const raw = 20 * portions; // ml sojasaus
-        const qty = ceilToStep(raw, 50);
-        const bottles = Math.ceil(qty / packaging.soyBottleMl);
-        items.push({ item: "sojasaus", qty: bottles * packaging.soyBottleMl, unit: "ml", note: `≈ ${bottles} flesje(s)` });
-        const cloves = ceilToStep(1 * getPortions().days * 2, 1); // 2 teentjes per dag
-        items.push({ item: "knoflook", qty: cloves, unit: "teentjes" });
-      }
-      else if (flavorOpt.kind === "teriyaki") {
-        const raw = 25 * portions; // ml
-        const qty = ceilToStep(raw, 50);
-        items.push({ item: "teriyaki saus (light)", qty, unit: "ml" });
-      }
-      else if (flavorOpt.kind === "pesto") {
-        const raw = 20 * portions; // g
-        const jars = Math.ceil(raw / packaging.pestoJarG);
-        items.push({ item: "pesto", qty: jars * packaging.pestoJarG, unit: "g", note: `≈ ${jars} pot(ten)` });
-      }
+    const base_select = document.getElementById("base");
+    const protein_select = document.getElementById("protein");
+    const veg_select = document.getElementById("veg");
+    const flavor_select = document.getElementById("flavor");
+    const fat_select = document.getElementById("fat");
 
-      return items;
-    }
-
-    function calcFatQty(fatOpt, portions) {
-      if (!fatOpt || fatOpt.id === "none") return [];
-      if (fatOpt.kind === "oil") {
-        // 5g/ml per volwassen-portie equivalent
-        const raw = perPortion.fatG * portions;
-        const qty = ceilToStep(raw, 10);
-        if (fatOpt.id === "olive_oil") return [{ item: "olijfolie", qty, unit: "ml", note: "≈ 1 tl p.p." }];
-        if (fatOpt.id === "coconut_oil") return [{ item: "kokosolie", qty, unit: "g", note: "≈ 1 tl p.p." }];
-      }
-      return [];
-    }
-
-    function mergeItems(items) {
-      // Merge by item+unit
-      const map = new Map();
-      for (const it of items) {
-        const key = `${it.item}__${it.unit}`;
-        if (!map.has(key)) map.set(key, { ...it });
-        else {
-          const cur = map.get(key);
-          cur.qty += it.qty;
-          // keep notes if present
-          if (it.note && !cur.note) cur.note = it.note;
-        }
-      }
-      return Array.from(map.values()).sort((a,b) => a.item.localeCompare(b.item, "nl"));
-    }
-
-    // ==========
-    // UI
-    // ==========
-    function fillSelect(selectId, list, defaultId) {
-      const sel = document.getElementById(selectId);
-      sel.innerHTML = "";
-      for (const opt of list) {
-        const el = document.createElement("option");
-        el.value = opt.id;
-        el.textContent = opt.name;
-        sel.appendChild(el);
-      }
-      if (defaultId) sel.value = defaultId;
-    }
-
-    function render() {
-      const { adults, kids, kidFactor, days, dayPortions, totalPortions } = getPortions();
-
-      const baseOpt = findById(options.base, document.getElementById("base").value);
-      const proteinOpt = findById(options.protein, document.getElementById("protein").value);
-      const vegOpt = findById(options.veg, document.getElementById("veg").value);
-      const flavorOpt = findById(options.flavor, document.getElementById("flavor").value);
-      const fatOpt = findById(options.fat, document.getElementById("fat").value);
-
-      document.getElementById("portionInfo").textContent =
-        `Porties: per dag ≈ ${dayPortions.toFixed(1)} volwassen-porties (volw: ${adults}×1 + kids: ${kids}×${kidFactor}). Totaal voor ${days} dag(en): ≈ ${totalPortions.toFixed(1)}.`;
-
-      document.getElementById("macroHint").textContent =
-        `Richtlijn per volwassen-portie: basis 85g ongekookt (of 250g aardappel / 2 wraps), eiwit 160g, groente 250g.`;
-
-      const items = [
-        ...calcBaseQty(baseOpt, totalPortions),
-        ...calcProteinQty(proteinOpt, totalPortions),
-        ...calcVegQty(vegOpt, totalPortions),
-        ...calcFlavorQty(flavorOpt, totalPortions),
-        ...calcFatQty(fatOpt, totalPortions)
-      ];
-
-      const merged = mergeItems(items);
-
-      const ul = document.getElementById("shoppingList");
-      ul.innerHTML = "";
-      for (const it of merged) {
-        const li = document.createElement("li");
-        const note = it.note ? ` — <span class="muted">${it.note}</span>` : "";
-        li.innerHTML = `<strong>${it.item}</strong>: ${formatQty(it.qty, it.unit)}${note}`;
-        ul.appendChild(li);
-      }
-
-      const prep = [
-        `Snelle bereiding: kook basis • bak eiwit • groente erbij • smaakmaker erdoor.`,
-        `Mealprep: maak alles in 1 pan/wok, verdeel in bakjes (2 dagen).`,
-        `Tip: voeg zout/peper/chili toe zonder noemenswaardige kcal.`
-      ];
-      document.getElementById("prepNotes").textContent = prep.join(" ");
-
-      const text = [
-        `COMBI: ${baseOpt.name} + ${proteinOpt.name} + ${vegOpt.name} + ${flavorOpt.name}${fatOpt && fatOpt.id !== "none" ? " + " + fatOpt.name : ""}`,
-        ``,
-        `INSTELLINGEN: volwassenen=${adults}, kids=${kids} (factor ${kidFactor}), dagen=${days}`,
-        `PORTIES: per dag ≈ ${dayPortions.toFixed(1)} • totaal ≈ ${totalPortions.toFixed(1)}`,
-        ``,
-        `BOODSCHAPPEN:`,
-        ...merged.map(it => `- ${it.item}: ${formatQty(it.qty, it.unit)}${it.note ? ` (${it.note})` : ""}`),
-        ``,
-        `BEREIDING (kort): basis koken • eiwit bakken • groente erbij • smaakmaker • klaar.`
-      ].join("\n");
-
-      document.getElementById("textOut").textContent = text;
-    }
-
-    function copyTextFrom(elId) {
-      const text = document.getElementById(elId).textContent;
-      navigator.clipboard.writeText(text);
-    }
-
-    // ==========
-    // Init
-    // ==========
-    fillSelect("base", options.base, "rice_white");
-    fillSelect("protein", options.protein, "chicken");
-    fillSelect("veg", options.veg, "stirfry_mix");
-    fillSelect("flavor", options.flavor, "curry_yellow");
-    fillSelect("fat", options.fat, "none");
-
-    ["adults","kids","kidFactor","days","base","protein","veg","flavor","fat"].forEach(id => {
-      document.getElementById(id).addEventListener("input", render);
-      document.getElementById(id).addEventListener("change", render);
+    load_options().then(() => {
+      fill("base", options.base);
+      fill("protein", options.protein);
+      fill("veg", options.veg);
+      fill("flavor", options.flavor);
+      fill("fat", options.fat, "none");
     });
-
-    document.getElementById("copyBtn").addEventListener("click", () => copyTextFrom("textOut"));
-    document.getElementById("copyRecipeBtn").addEventListener("click", () => copyTextFrom("textOut"));
-
-    render();
   </script>
 </body>
 </html>
