@@ -1,0 +1,76 @@
+{
+  "per_portion": {
+    "base_dry_g": 85,
+    "potato_g": 250,
+    "wraps_count": 2,
+    "protein_g": 160,
+    "veg_g": 250,
+    "flavor_g": 30,
+    "fat_g": 5
+  },
+
+  "packaging": {
+    "rice_step_g": 50,
+    "pasta_step_g": 50,
+    "dry_other_step_g": 50,
+    "potato_step_g": 250,
+    "protein_step_g": 100,
+
+    "veg_frozen_bag_g": 750,
+    "veg_fresh_pack_g": 400,
+
+    "curry_paste_jar_g": 200,
+    "passata_carton_g": 500,
+    "taco_seasoning_sachet_g": 30,
+    "soy_bottle_ml": 150,
+    "pesto_jar_g": 190
+  },
+
+  "options": {
+    "base": [
+      { "id": "rice_white", "name": "rijst (wit)", "type": "dry_g", "round_step_key": "rice_step_g", "shop": { "item": "rijst", "unit": "g" } },
+      { "id": "rice_brown", "name": "rijst (zilvervlies)", "type": "dry_g", "round_step_key": "rice_step_g", "shop": { "item": "zilvervliesrijst", "unit": "g" } },
+      { "id": "pasta", "name": "pasta", "type": "dry_g", "round_step_key": "pasta_step_g", "shop": { "item": "pasta", "unit": "g" } },
+      { "id": "quinoa", "name": "quinoa", "type": "dry_g", "round_step_key": "dry_other_step_g", "shop": { "item": "quinoa", "unit": "g" } },
+      { "id": "bulgur", "name": "bulgur", "type": "dry_g", "round_step_key": "dry_other_step_g", "shop": { "item": "bulgur", "unit": "g" } },
+      { "id": "potatoes", "name": "aardappelen / krieltjes", "type": "potato_g", "round_step_key": "potato_step_g", "shop": { "item": "aardappelen (of krieltjes)", "unit": "g" } },
+      { "id": "wraps", "name": "wraps", "type": "wraps_count", "round_step": 1, "shop": { "item": "wraps", "unit": "st" } }
+    ],
+
+    "protein": [
+      { "id": "chicken", "name": "kipfilet", "type": "protein_g", "round_step_key": "protein_step_g", "shop": { "item": "kipfilet", "unit": "g" } },
+      { "id": "turkey", "name": "kalkoenfilet", "type": "protein_g", "round_step_key": "protein_step_g", "shop": { "item": "kalkoenfilet", "unit": "g" } },
+      { "id": "beef_mince", "name": "rundergehakt (mager)", "type": "protein_g", "round_step_key": "protein_step_g", "shop": { "item": "mager rundergehakt", "unit": "g" } },
+      { "id": "white_fish", "name": "witvis", "type": "protein_g", "round_step_key": "protein_step_g", "shop": { "item": "witvis", "unit": "g" } },
+      { "id": "salmon", "name": "zalm", "type": "protein_g", "round_step_key": "protein_step_g", "shop": { "item": "zalm", "unit": "g" } },
+      { "id": "tofu", "name": "tofu", "type": "protein_g", "round_step_key": "protein_step_g", "shop": { "item": "tofu", "unit": "g" } },
+      { "id": "eggs", "name": "eieren", "type": "eggs", "round_step": 1, "shop": { "item": "eieren", "unit": "st" } }
+    ],
+
+    "veg": [
+      { "id": "stirfry_mix", "name": "diepvries roerbakmix", "kind": "frozen_bag", "shop": { "item": "diepvries roerbakmix", "unit": "g" } },
+      { "id": "broccoli", "name": "broccoli", "kind": "fresh_pack", "shop": { "item": "broccoli (roosjes)", "unit": "g" } },
+      { "id": "green_beans", "name": "sperziebonen", "kind": "fresh_pack", "shop": { "item": "sperziebonen", "unit": "g" } },
+      { "id": "pepper_onion", "name": "paprika + ui", "kind": "fresh_pack", "shop": { "item": "paprika + ui", "unit": "g" } },
+      { "id": "spinach", "name": "spinazie", "kind": "fresh_pack", "shop": { "item": "spinazie", "unit": "g" } },
+      { "id": "courgette", "name": "courgette", "kind": "fresh_pack", "shop": { "item": "courgette", "unit": "g" } }
+    ],
+
+    "flavor": [
+      { "id": "curry_green", "name": "groene curry paste", "kind": "curry_paste" },
+      { "id": "curry_yellow", "name": "gele curry paste", "kind": "curry_paste" },
+      { "id": "curry_red", "name": "rode curry paste", "kind": "curry_paste" },
+      { "id": "soy_garlic", "name": "sojasaus + knoflook", "kind": "soy" },
+      { "id": "teriyaki", "name": "teriyaki (light)", "kind": "teriyaki" },
+      { "id": "passata", "name": "passata + Italiaanse kruiden", "kind": "passata" },
+      { "id": "taco", "name": "taco kruiden", "kind": "taco" },
+      { "id": "pesto", "name": "pesto (liefst light)", "kind": "pesto" }
+    ],
+
+    "fat": [
+      { "id": "none", "name": "geen" },
+      { "id": "olive_oil", "name": "olijfolie", "kind": "oil" },
+      { "id": "coconut_oil", "name": "kokosolie", "kind": "oil" }
+    ]
+  }
+}
