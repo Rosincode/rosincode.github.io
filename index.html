@@ -207,11 +207,6 @@
         <label for="flavor">Smaakmaker</label>
       </div>
 
-      <div class="field">
-        <select id="fat"></select>
-        <label for="fat">Vet (optioneel)</label>
-      </div>
-
     </div>
   </div>
 
@@ -272,9 +267,6 @@
       const p = portions();
       const out = [];
 
-      const fat = options.fat.find(x => x.id === fat_select.value);
-      if (fat && fat.id !== "none") out.push(`- ${fat.name}`);
-
       const veg = options.veg.find(x => x.id === veg_select.value);
       const veg_step = packaging.veg_fresh_pack_g || 400;
       const veg_g = round(per.veg_g * p, veg_step);
@@ -331,13 +323,12 @@
     const protein_select = document.getElementById("protein");
     const veg_select = document.getElementById("veg");
     const flavor_select = document.getElementById("flavor");
-    const fat_select = document.getElementById("fat");
 
     const make_note_btn = document.getElementById("make_note_btn");
     const pinfo = document.getElementById("pinfo");
 
     // float labels on input/change
-    const all_fields = [adults, kids, kid_factor, days, base_select, protein_select, veg_select, flavor_select, fat_select];
+    const all_fields = [adults, kids, kid_factor, days, base_select, protein_select, veg_select, flavor_select];
     for (const el of all_fields) {
       el.addEventListener("input", () => { mark_filled(el); update_portion_info(); });
       el.addEventListener("change", () => { mark_filled(el); update_portion_info(); });
@@ -349,7 +340,6 @@
       fill("protein", options.protein, "chicken");
       fill("veg", options.veg, "stirfry_mix");
       fill("flavor", options.flavor, "curry_yellow");
-      fill("fat", options.fat, "none");
       make_note_btn.disabled = false;
       update_portion_info();
     }).catch(err => alert(err.message));
