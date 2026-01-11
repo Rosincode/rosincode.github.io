@@ -8,50 +8,13 @@
   <title>Meal Matrix</title>
 
   <style>
-    body {
-      font-family: -apple-system, system-ui, sans-serif;
-      background: #f2f2f7;
-      margin: 0;
-      padding: 16px;
-    }
-    h1 {
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-    label {
-      font-size: 13px;
-      font-weight: 600;
-      margin-top: 12px;
-      display: block;
-    }
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin-top: 6px;
-      border-radius: 12px;
-      border: 1px solid #d1d1d6;
-      font-size: 16px;
-      background: #fff;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 16px;
-      font-size: 17px;
-      font-weight: 600;
-      border-radius: 14px;
-      border: none;
-      background: #007aff;
-      color: #fff;
-    }
-    button:active {
-      background: #005ecb;
-    }
-    .hint {
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 6px;
-    }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #f2f2f7; margin: 0; padding: 16px; }
+    h1 { font-size: 18px; margin-bottom: 12px; }
+    label { font-size: 13px; font-weight: 600; margin-top: 12px; display: block; }
+    input, select { width: 100%; padding: 12px; margin-top: 6px; border-radius: 12px; border: 1px solid #d1d1d6; font-size: 16px; background: #fff; }
+    button { margin-top: 20px; width: 100%; padding: 16px; font-size: 17px; font-weight: 600; border-radius: 14px; border: none; background: #007aff; color: #fff; }
+    button:active { background: #005ecb; }
+    button:disabled { opacity: 0.5; }
   </style>
 </head>
 
@@ -85,13 +48,14 @@
   <label>Vet (optioneel)</label>
   <select id="fat"></select>
 
-  <button onclick="make_list()">🛒 Boodschappenlijst</button>
+  <button id="make_note_btn" onclick="share_list()" disabled>Maak notitie</button>
 
   <script>
     let options, packaging, per;
 
     async function load_options() {
       const res = await fetch("./options.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("options.json niet gevonden");
       const data = await res.json();
       options = data.options;
       packaging = data.packaging;
@@ -122,35 +86,62 @@
       return Math.ceil(v / step) * step;
     }
 
-    function make_list() {
+    function base_round_step(base) {
+      // Gebruik de step per type basis (fallback: rice_step_g)
+      if (base.round_step_key && packaging[base.round_step_key]) return packaging[base.round_step_key];
+      if (base.id === "pasta" && packaging.pasta_step_g) return packaging.pasta_step_g;
+      return packaging.rice_step_g || 50;
+    }
+
+    function build_list_text() {
       const p = portions();
       const out = [];
 
+      // Volgorde: Vet -> Groenten -> Eiwitten -> Basis -> Smaakmaker
       const fat = options.fat.find(x => x.id === fat_select.value);
       if (fat && fat.id !== "none") out.push(`☐ ${fat.name}`);
 
       const veg = options.veg.find(x => x.id === veg_select.value);
-      const veg_g = round(per.veg_g * p, packaging.veg_fresh_pack_g);
+      const veg_step = packaging.veg_fresh_pack_g || 400;
+      const veg_g = round(per.veg_g * p, veg_step);
       out.push(`☐ ${veg.name} – ${veg_g} g`);
 
       const prot = options.protein.find(x => x.id === protein_select.value);
-      const prot_g = round(per.protein_g * p, packaging.protein_step_g);
+      const prot_step = packaging.protein_step_g || 100;
+      const prot_g = round(per.protein_g * p, prot_step);
       out.push(`☐ ${prot.name} – ${prot_g} g`);
 
       const base = options.base.find(x => x.id === base_select.value);
       if (base.type === "wraps_count") {
         out.push(`☐ ${base.name} – ${Math.ceil(per.wraps_count * p)} st`);
       } else if (base.type === "potato_g") {
-        out.push(`☐ ${base.name} – ${round(per.potato_g * p, packaging.potato_step_g)} g`);
+        const potato_step = packaging.potato_step_g || 250;
+        out.push(`☐ ${base.name} – ${round(per.potato_g * p, potato_step)} g`);
       } else {
-        out.push(`☐ ${base.name} – ${round(per.base_dry_g * p, packaging.rice_step_g)} g`);
+        out.push(`☐ ${base.name} – ${round(per.base_dry_g * p, base_round_step(base))} g`);
       }
 
       const flav = options.flavor.find(x => x.id === flavor_select.value);
       out.push(`☐ ${flav.name}`);
 
-      navigator.clipboard.writeText(out.join("\n"));
-      alert("Boodschappenlijst gekopieerd naar klembord");
+      return out.join("\n");
+    }
+
+    async function share_list() {
+      const text = build_list_text();
+
+      // kopieer sowieso
+      try { await navigator.clipboard.writeText(text); } catch (e) {}
+
+      // share sheet (Notities zit daar tussen)
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "Boodschappenlijst", text });
+          return;
+        } catch (e) {}
+      }
+
+      alert("Boodschappenlijst gekopieerd. Plak in Notities.");
     }
 
     const adults = document.getElementById("adults");
@@ -164,12 +155,17 @@
     const flavor_select = document.getElementById("flavor");
     const fat_select = document.getElementById("fat");
 
+    const make_note_btn = document.getElementById("make_note_btn");
+
     load_options().then(() => {
       fill("base", options.base);
       fill("protein", options.protein);
       fill("veg", options.veg);
       fill("flavor", options.flavor);
       fill("fat", options.fat, "none");
+      make_note_btn.disabled = false;
+    }).catch(err => {
+      alert(err.message);
     });
   </script>
 </body>
