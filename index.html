@@ -272,32 +272,31 @@
       const p = portions();
       const out = [];
 
-      // volgorde: vet -> groenten -> eiwitten -> basis -> smaakmaker
       const fat = options.fat.find(x => x.id === fat_select.value);
-      if (fat && fat.id !== "none") out.push(`☐ ${fat.name}`);
+      if (fat && fat.id !== "none") out.push(`- ${fat.name}`);
 
       const veg = options.veg.find(x => x.id === veg_select.value);
       const veg_step = packaging.veg_fresh_pack_g || 400;
       const veg_g = round(per.veg_g * p, veg_step);
-      out.push(`☐ ${veg.name} – ${veg_g} g`);
+      out.push(`- ${veg.name} – ${veg_g} g`);
 
       const prot = options.protein.find(x => x.id === protein_select.value);
       const prot_step = packaging.protein_step_g || 100;
       const prot_g = round(per.protein_g * p, prot_step);
-      out.push(`☐ ${prot.name} – ${prot_g} g`);
+      out.push(`- ${prot.name} – ${prot_g} g`);
 
-      const base = options.base.find(x => x.id === base_select.value);
+     const base = options.base.find(x => x.id === base_select.value);
       if (base.type === "wraps_count") {
-        out.push(`☐ ${base.name} – ${Math.ceil(per.wraps_count * p)} st`);
+        out.push(`- ${base.name} – ${Math.ceil(per.wraps_count * p)} st`);
       } else if (base.type === "potato_g") {
         const potato_step = packaging.potato_step_g || 250;
-        out.push(`☐ ${base.name} – ${round(per.potato_g * p, potato_step)} g`);
+        out.push(`- ${base.name} – ${round(per.potato_g * p, potato_step)} g`);
       } else {
-        out.push(`☐ ${base.name} – ${round(per.base_dry_g * p, base_round_step(base))} g`);
+        out.push(`- ${base.name} – ${round(per.base_dry_g * p, base_round_step(base))} g`);
       }
 
       const flav = options.flavor.find(x => x.id === flavor_select.value);
-      out.push(`☐ ${flav.name}`);
+      out.push(`- ${flav.name}`);
 
       return out.join("\n");
     }
